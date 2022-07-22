@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">NYC Schools</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="news">News</string>
+    <string name="all_news">All News</string>
+    <string name="business">Business</string>
+    <string name="entertainment">Entertainment</string>
+    <string name="health">Health</string>
+    <string name="sports">Sports</string>
+    <string name="technology">Technology</string>
+    <string name="filter">Filter</string>
+    <string name="details">Details</string>
+
+
+    <string name="data_not_found">Data not found for this school!</string>
+    <string name="sat_test_takers">SAT Test Takers:</string>
+    <string name="sat_critical_reading_avg_score">SAT Critical Reading avg Score:</string>
+    <string name="sat_math_avg_score">SAT Math avg Score:</string>
+    <string name="sat_writing_avg_score">SAT Writing avg Score:</string>
+    <string name="attention_text">Attention</string>
+    <string name="update">Update</string>
+
+    <string name="add_school">Add School</string>
+    <string name="hint_school">School...</string>
+    <string name="button_save">Save</string>
+    <string name="empty_not_saved">School not saved because it is empty.</string>
+    <string name="school_description">Description</string>
+    <string name="school_name">School Name</string>
+    <string name="sat_test_scores_title">SAT Test Scores</string>
+    <string name="sat_scores_loading_text">Loading....</string>
+    <string name="school_location_button">Directions</string>
+    <string name="school_website_button">School Website</string>
+    <string name="nyc_schools_title">NYC Schools</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="action_search">Search</string>
+</resources>

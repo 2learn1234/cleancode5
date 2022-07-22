@@ -14,38 +14,38 @@ import kotlinx.coroutines.flow.Flow
 import okhttp3.*
 import java.io.IOException
 
-open class SchoolRepository internal constructor(private val context: Context?) {
-    private val mSchoolDao: SchoolDao
-    private val mScoresDao: SATScoresDao
+open class SchoolRepository(val context: Context?){//internal constructor(context) {
+    //private val mSchoolDao: SchoolDao
+    //private val mScoresDao: SATScoresDao
 
     /**
      * Will fetch Schools list as LiveData so that it can be executed in the background
      * @return
      */
-    public val allSchools: LiveData<List<School>>
+   // public val allSchools: LiveData<List<School>>
 
     /**
      * Search in DB
      * @param searchString
      * @return
      */
-    public fun getFilteredSchools(searchString: String?): LiveData<List<School>> {
+  /*  public fun getFilteredSchools(searchString: String?): LiveData<List<School>> {
         return mSchoolDao.getSchoolsFiltered(searchString)
-    }
+    }*/
 
     /*
      * Get SATScores for School DBN
      * @param schoolDBN
      * @return
      */
-    public open fun getSATScoresForSchool(schoolDBN: String?): LiveData<SATScores>? {
+/*    public open fun getSATScoresForSchool(schoolDBN: String?): LiveData<SATScores>? {
         return mScoresDao?.getScore(schoolDBN)
-    }
+    }*/
 
-    /**
+  /*  *//**
      * Insert Schools into DB in background
      * @param schools
-     */
+     *//*
     fun insertAll(schools: List<School>?) {
         SchoolRoomDatabase.databaseWriteExecutor.execute {
             mSchoolDao.insertAll(
@@ -54,10 +54,10 @@ open class SchoolRepository internal constructor(private val context: Context?) 
         }
     }
 
-    /**
+    *//**
      * Insert Scores into DB in background
      * @param scores
-     */
+     *//*
     public fun insertAllScores(scores: List<SATScores>?) {
         SchoolRoomDatabase.databaseWriteExecutor.execute {
             mScoresDao.insertAll(
@@ -66,18 +66,18 @@ open class SchoolRepository internal constructor(private val context: Context?) 
         }
     }
 
-    /**
+    *//**
      * From here lies all code related to REST API calls using OKHTTP.
      * We can put them in another class to handle them.
-     */
+     *//*
     public fun loadSchools() {
         fetchSchoolsData()
         fetchSATScores()
     }
 
-    /**
+    *//**
      * Fetches School Data from NYC Schools API
-     */
+     *//*
     public  fun fetchSchoolsData() {
         val client = OkHttpClient().newBuilder()
             .build()
@@ -103,9 +103,9 @@ open class SchoolRepository internal constructor(private val context: Context?) 
         }
     }
 
-    /**
+    *//**
      * Fetches SATScores Data from NYC Schools API
-     */
+     *//*
     public fun fetchSATScores() {
         val client = OkHttpClient().newBuilder()
             .build()
@@ -136,12 +136,12 @@ open class SchoolRepository internal constructor(private val context: Context?) 
         @Volatile
         private var INSTANCE: SchoolRepository? = null
 
-        /**
+        *//**
          * Singleton Instance
          * @param context
          * @return
-         */
-        public fun getRepository(context: Context?): SchoolRepository? {
+         *//*
+        *//*public fun getRepository(context: Context?): SchoolRepository? {
             if (INSTANCE == null) {
                 synchronized(SchoolRepository::class.java) {
                     if (INSTANCE == null) {
@@ -150,13 +150,13 @@ open class SchoolRepository internal constructor(private val context: Context?) 
                 }
             }
             return INSTANCE
-        }
-    }
+        }*//*
+    }*/
 
-    init {
-        val db = SchoolRoomDatabase.getDatabase(context)
+ /*   init {
+        val db = SchoolRoomDatabase.getDatabase(context = context)
         mSchoolDao = db.schoolDao()
         mScoresDao = db.satScoresDao()
-        allSchools = mSchoolDao.schools
-    }
+       allSchools = mSchoolDao.schools
+    }*/
 }
