@@ -22,6 +22,7 @@ import com.example.androidcleanarchitecture.viewmodel.SchoolsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,7 +62,7 @@ class SchoolsFragment : Fragment() {
         binding.rvSchools.layoutManager = LinearLayoutManager(requireContext())
         launch = viewLifecycleOwner.lifecycleScope.launch {
           //  viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.schoolData.collectLatest { it ->
+                viewModel.schoolData.collect { it ->
                     when (it) {
                         is ResponseModel.Error -> {
                             Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
@@ -101,6 +102,19 @@ class SchoolsFragment : Fragment() {
                 viewModel.getNews(it)
             }
         }
+
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.searchSchools.collect{ searchedSchools ->
+                newsListAdapter =
+                    SchoolsListAdapter(searchedSchools as ArrayList<School>) {
+                        redirectToDetails(it)
+                    }
+                binding.rvSchools.adapter = newsListAdapter
+
+            }
+        }
+
     }
 
     private fun redirectToDetails(school: School) {
