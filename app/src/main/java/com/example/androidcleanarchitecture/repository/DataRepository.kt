@@ -2,7 +2,6 @@ package com.example.androidcleanarchitecture.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import com.example.androidcleanarchitecture.database.SchoolRepository
 import com.example.androidcleanarchitecture.database.SchoolRoomDatabase
 import com.example.androidcleanarchitecture.di.NetworkModule
 import com.example.androidcleanarchitecture.model.SATScores
@@ -21,31 +20,43 @@ import okhttp3.Request
 import retrofit2.Response
 import java.io.IOException
 
-class DataRepository(var networkModule: NetworkModule,  context: Context?) :
-    SchoolRepository(context) {
-    private lateinit  var mSchoolDao: SchoolDao
-    private lateinit  var  mScoresDao: SATScoresDao
+class DataRepository(var networkModule: NetworkModule, context: Context) {
+    private var mSchoolDao: SchoolDao
+    private var mScoresDao: SATScoresDao
+
     /**
      * Will fetch Schools list as LiveData so that it can be executed in the background
      * @return
      */
-    public val allSchools: LiveData<List<School>>
+    val allSchools: LiveData<List<School>>
+
+    @JvmName("getAllSchools1")
+    fun getAllSchools() = allSchools
 
 
     init {
-        val db = SchoolRoomDatabase.getDatabase(context = context)
-        mSchoolDao = db.schoolDao()
-        mScoresDao = db.satScoresDao()
+        val db = SchoolRoomDatabase.getDatabaseInstance(context = context)
+        mSchoolDao = db.schoolDao
+        mScoresDao = db.satScoresDao
         allSchools = mSchoolDao.schools
     }
+
+
+    suspend fun insertAll(schools:List<School>)=mSchoolDao.insertAll(schools)
+
+    fun getSchools()=mSchoolDao.selectSchools()
+
+    fun seachSchools(searchQuery: String?)=mSchoolDao.searchInSchoolTable(searchQuery)
+    suspend fun deleteAllSchools()=mSchoolDao.deleteAll()
+
 
     /**
      * Search in DB
      * @param searchString
      * @return
      */
-    public fun getFilteredSchools(searchString: String?): LiveData<List<School>> {
-        return mSchoolDao.getSchoolsFiltered(searchString)
+    public fun getSearchSchools(searchString: String?): Flow<List<School>> {
+        return mSchoolDao.searchInSchoolTable(searchString)
     }
 
 
@@ -54,7 +65,7 @@ class DataRepository(var networkModule: NetworkModule,  context: Context?) :
   * @param schoolDBN
   * @return
   */
-    public open fun getSATScoresForSchool(schoolDBN: String?): LiveData<SATScores>? {
+    public fun getSATScoresForSchool(schoolDBN: String?): LiveData<SATScores>? {
         return mScoresDao?.getScore(schoolDBN)
     }
 
@@ -94,7 +105,7 @@ class DataRepository(var networkModule: NetworkModule,  context: Context?) :
     /**
      * Fetches School Data from NYC Schools API
      */
-    public  fun fetchSchoolsData() {
+    public fun fetchSchoolsData() {
         val client = OkHttpClient().newBuilder()
             .build()
         val request: Request = Request.Builder()
@@ -111,7 +122,7 @@ class DataRepository(var networkModule: NetworkModule,  context: Context?) :
                     // Load data as School Object using Gson
                     val listType = object : TypeToken<List<School?>?>() {}.type
                     val schools = Gson().fromJson<List<School>>(jsonData, listType)
-                    insertAll(schools)
+                //    insertAll(schools)
                 }
             })
         } catch (e: Exception) {
@@ -147,27 +158,28 @@ class DataRepository(var networkModule: NetworkModule,  context: Context?) :
         }
     }
 
-    companion object {
+/*    companion object {
 
         @Volatile
-        private var INSTANCE: SchoolRepository? = null
+        private var INSTANCE: DataRepository? = null
 
-        /**
-         * Singleton Instance
-         * @param context
-         * @return
-         */
-        /*public fun getRepository(context: Context?): SchoolRepository? {
+        */
+    /**
+     * Singleton Instance
+     * @param context
+     * @return
+     *//*
+        public fun getRepository(context: Context): DataRepository? {
             if (INSTANCE == null) {
                 synchronized(SchoolRepository::class.java) {
                     if (INSTANCE == null) {
-                        INSTANCE = SchoolRepository(context)
+                        INSTANCE = DataRepository(context)
                     }
                 }
             }
             return INSTANCE
-        }*/
-    }
+        }
+    }*/
 
 
 
@@ -184,5 +196,14 @@ class DataRepository(var networkModule: NetworkModule,  context: Context?) :
             emit(response)
         }
     }
+
+    suspend fun deleteShools() {
+        mSchoolDao.deleteAll()
+    }
+
+    suspend fun deleteScores() {
+        mScoresDao.deleteAll()
+    }
+
 
 }
