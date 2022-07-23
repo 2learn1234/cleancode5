@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -56,40 +57,39 @@ class SchoolsFragment : Fragment() {
 
         binding.rvSchools.layoutManager = LinearLayoutManager(requireContext())
         launch = viewLifecycleOwner.lifecycleScope.launch {
-          //  viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.schoolData.collect { it ->
-                    when (it) {
-                        is ResponseModel.Error -> {
-                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                        }
-                        is ResponseModel.Idle -> {
-                            Toast.makeText(requireContext(), "Idle State", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                        is ResponseModel.Loading -> {
-                            showDialog()
-                        }
-                        is ResponseModel.Success -> {
-                            dismissDialog()
-                            if (it.data?.body()?.get(0)?.dbn.isNullOrEmpty()) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "No data found.",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else {
-                                it.data?.body()?.let { schools ->
-                                    newsListAdapter.diff.submitList(schools as ArrayList<School>)
-                                    newsListAdapter.onItemClick={  school ->
-                                        redirectToDetails(school)
-                                    }
-
-                                    binding.rvSchools.adapter = newsListAdapter
+            //  viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.schoolData.collect { it ->
+                when (it) {
+                    is ResponseModel.Error -> {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                    }
+                    is ResponseModel.Idle -> {
+                        Toast.makeText(requireContext(), "Idle State", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    is ResponseModel.Loading -> {
+                        showDialog()
+                    }
+                    is ResponseModel.Success -> {
+                        dismissDialog()
+                        if (it.data?.body()?.get(0)?.dbn.isNullOrEmpty()) {
+                            Toast.makeText(
+                                requireContext(),
+                                "No data found.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            it.data?.body()?.let { schools ->
+                                newsListAdapter.diff.submitList(schools as ArrayList<School>)
+                                newsListAdapter.onItemClick = { school ->
+                                    redirectToDetails(school)
                                 }
+                                binding.rvSchools.adapter = newsListAdapter
                             }
                         }
                     }
-             //   }
+                }
+                //   }
             }
         }
 
@@ -99,17 +99,25 @@ class SchoolsFragment : Fragment() {
             }
         }
 
+        binding.edSearch.addTextChangedListener { it ->
+            if(!it.isNullOrEmpty())
 
-    /*    viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.searchSchools.collect{ searchedSchools ->
-                newsListAdapter =
-                    SchoolsListAdapter(searchedSchools as ArrayList<School>) {
-                        redirectToDetails(it)
-                    }
+            viewModel.searchSchools(it.toString().trim())
+        }
+
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.searchSchools.collect { searchedSchools ->
+                if (searchedSchools.isNullOrEmpty())
+                    return@collect
+                newsListAdapter.diff.submitList(searchedSchools as ArrayList<School>)
+                newsListAdapter.onItemClick = { school ->
+                    redirectToDetails(school)
+                }
                 binding.rvSchools.adapter = newsListAdapter
 
             }
-        }*/
+        }
 
     }
 

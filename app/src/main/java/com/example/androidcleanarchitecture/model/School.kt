@@ -116,7 +116,7 @@ data class School(
         return longitude
     }
 
-    fun setLongitude(longitude: String) {
+    fun setLongitude(longitude: String?) {
         this.longitude = longitude
     }
 
