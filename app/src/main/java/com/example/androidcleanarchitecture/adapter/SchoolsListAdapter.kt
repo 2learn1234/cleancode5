@@ -10,8 +10,10 @@ import com.example.androidcleanarchitecture.R
 import com.example.androidcleanarchitecture.model.School
 import com.squareup.picasso.Picasso
 import java.util.ArrayList
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 
-class SchoolsListAdapter(private val schoolList: ArrayList<School>, val onItemClick: (School) -> Unit) :
+class SchoolsListAdapter(private val schoolList: ArrayList<School>) :
     RecyclerView.Adapter<SchoolsListAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -26,21 +28,36 @@ class SchoolsListAdapter(private val schoolList: ArrayList<School>, val onItemCl
         }
     }
 
+    private val diffCallBack = object : DiffUtil.ItemCallback<School>() {
+        override fun areItemsTheSame(oldItem: School, newItem: School): Boolean {
+            return (oldItem.dbn == newItem.dbn)
+        }
+
+        override fun areContentsTheSame(oldItem: School, newItem: School): Boolean {
+            return oldItem == newItem
+        }
+    }
+    val diff = AsyncListDiffer(this, diffCallBack)
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_school, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindItems(schoolList[position])
+        val school = diff.currentList[position]
+        holder.bindItems(school)
         holder.itemView.setOnClickListener {
-            val articles : School = schoolList[position]
-            onItemClick(articles)
+            onItemClick?.invoke(school)
         }
     }
 
 
     override fun getItemCount(): Int {
-        return schoolList.size
+        return diff.currentList.size
     }
+
+
+     var onItemClick:((School) -> Unit)? = null
 }

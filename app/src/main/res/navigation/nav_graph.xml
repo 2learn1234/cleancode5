@@ -9,7 +9,7 @@
         android:id="@+id/newsFragment"
         android:name="com.example.androidcleanarchitecture.ui.SchoolsFragment"
         android:label="Latest News"
-        tools:layout="@layout/fragment_news" >
+        tools:layout="@layout/fragment_schools" >
         <action
             android:id="@+id/action_newsFragment_to_detailNewsFragment"
             app:destination="@id/detailNewsFragment" />

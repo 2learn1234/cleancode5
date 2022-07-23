@@ -7,23 +7,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidcleanarchitecture.R
 import com.example.androidcleanarchitecture.adapter.SchoolsListAdapter
-import com.example.androidcleanarchitecture.databinding.FragmentNewsBinding
+import com.example.androidcleanarchitecture.databinding.FragmentSchoolsBinding
 import com.example.androidcleanarchitecture.model.School
 import com.example.androidcleanarchitecture.network.ResponseModel
 import com.example.androidcleanarchitecture.viewmodel.SchoolsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -31,7 +27,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SchoolsFragment : Fragment() {
     private lateinit var launch: Job
-    private lateinit var binding: FragmentNewsBinding
+    private lateinit var binding: FragmentSchoolsBinding
     private val viewModel: SchoolsViewModel by sharedViewModel()
     private lateinit var newsListAdapter: SchoolsListAdapter
 
@@ -45,7 +41,7 @@ class SchoolsFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(
             inflater,
-            com.example.androidcleanarchitecture.R.layout.fragment_news,
+            com.example.androidcleanarchitecture.R.layout.fragment_schools,
             null,
             false
         )
@@ -55,8 +51,7 @@ class SchoolsFragment : Fragment() {
 
     override fun onViewCreated(vnewsListAdapteriew: View, savedInstanceState: Bundle?) {
         newsListAdapter =
-            SchoolsListAdapter(ArrayList<School>()) {
-            }
+            SchoolsListAdapter(ArrayList<School>())
         binding.rvSchools.adapter = newsListAdapter
 
         binding.rvSchools.layoutManager = LinearLayoutManager(requireContext())
@@ -84,10 +79,11 @@ class SchoolsFragment : Fragment() {
                                 ).show()
                             } else {
                                 it.data?.body()?.let { schools ->
-                                    newsListAdapter =
-                                        SchoolsListAdapter(schools as ArrayList<School>) {
-                                            redirectToDetails(it)
-                                        }
+                                    newsListAdapter.diff.submitList(schools as ArrayList<School>)
+                                    newsListAdapter.onItemClick={  school ->
+                                        redirectToDetails(school)
+                                    }
+
                                     binding.rvSchools.adapter = newsListAdapter
                                 }
                             }
@@ -104,7 +100,7 @@ class SchoolsFragment : Fragment() {
         }
 
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+    /*    viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.searchSchools.collect{ searchedSchools ->
                 newsListAdapter =
                     SchoolsListAdapter(searchedSchools as ArrayList<School>) {
@@ -113,7 +109,7 @@ class SchoolsFragment : Fragment() {
                 binding.rvSchools.adapter = newsListAdapter
 
             }
-        }
+        }*/
 
     }
 
