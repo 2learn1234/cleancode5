@@ -27,8 +27,8 @@ interface SchoolDao {
 
 
     @get:Query("SELECT * FROM school_table ORDER BY school_name DESC")
-    @get:Transaction
-    val schools: LiveData<List<School>>
+   // @get:Transaction
+    val schools: Flow<List<School>>
 
   /*  @Transaction
     @Query("SELECT * FROM school_table where school_name like :searchString ORDER BY school_name ASC")

@@ -27,7 +27,7 @@ class SchoolsViewModel(public var dataRepo: DataRepository) : ViewModel() {
         MutableStateFlow<ResponseModel<Response<List<SATScores>>>>(ResponseModel.Idle("Idle State"))
     val newsURL2 = MutableStateFlow<String>("")
 
-    val allSchools=dataRepo.getAllSchools()
+//    val allSchools=dataRepo.getAllSchools()
 
     fun insertSchools(schools:List<School>)=viewModelScope.launch {
         dataRepo.insertAll(schools)

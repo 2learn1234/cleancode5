@@ -24,21 +24,11 @@ class DataRepository(var networkModule: NetworkModule, context: Context) {
     private var mSchoolDao: SchoolDao
     private var mScoresDao: SATScoresDao
 
-    /**
-     * Will fetch Schools list as LiveData so that it can be executed in the background
-     * @return
-     */
-    val allSchools: LiveData<List<School>>
-
-    @JvmName("getAllSchools1")
-    fun getAllSchools() = allSchools
-
 
     init {
         val db = SchoolRoomDatabase.getDatabaseInstance(context = context)
         mSchoolDao = db.schoolDao
         mScoresDao = db.satScoresDao
-        allSchools = mSchoolDao.schools
     }
 
 
@@ -60,14 +50,6 @@ class DataRepository(var networkModule: NetworkModule, context: Context) {
     }
 
 
-    /*
-  * Get SATScores for School DBN
-  * @param schoolDBN
-  * @return
-  */
-    public fun getSATScoresForSchool(schoolDBN: String?): LiveData<SATScores>? {
-        return mScoresDao?.getScore(schoolDBN)
-    }
 
     /**
      * Insert Schools into DB in background

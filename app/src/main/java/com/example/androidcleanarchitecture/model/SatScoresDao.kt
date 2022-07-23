@@ -15,12 +15,15 @@ interface SATScoresDao {
     @Query("DELETE FROM sat_table")
     fun deleteAll()
 
-    @Transaction
+    @Query("SELECT * FROM school_table WHERE school_name LIKE '%' ||:searchQuery||'%'")
+    fun searchInSchoolTable(searchQuery:String?):Flow<List<School>>
+
+/*    @Transaction
     @Query("SELECT * FROM sat_table where dbn = :schoolDBN")
-    fun getScore(schoolDBN: String?): LiveData<SATScores>
+    fun getScore(schoolDBN: String?): LiveData<SATScores>*/
+
 
     @get:Query("SELECT * FROM sat_table  ORDER BY school_name ASC")
-    @get:Transaction
-    @get:VisibleForTesting
+   // @get:Transaction
     val allScores:Flow<List<SATScores?>?>?
 }
