@@ -128,11 +128,12 @@ class SchoolsFragment : Fragment() {
             val bottomNavigationView =
                 activity?.findViewById(R.id.bottom_navigation) as BottomNavigationView
             try {
-                bottomNavigationView.selectedItemId = R.id.detailNewsFragment
+              //  bottomNavigationView.selectedItemId = R.id.detailNewsFragment
                 viewModel.getNews2(school.dbn!!)
                 val navController = findNavController();
                 val bundle = Bundle()
                 bundle.putString("dbn", school.dbn)
+                bundle.putString("description",school.getOverview_paragraph())
                 navController.navigate(
                     com.example.androidcleanarchitecture.R.id.action_newsFragment_to_detailNewsFragment,
                     bundle

@@ -9,14 +9,14 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SATScoresDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(scores: List<SATScores?>?)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+     fun insertAll(scores: List<SATScores?>?)
 
     @Query("DELETE FROM sat_table")
-    fun deleteAll()
+    suspend fun deleteAll()=null
 
-    @Query("SELECT * FROM school_table WHERE school_name LIKE '%' ||:searchQuery||'%'")
-    fun searchInSchoolTable(searchQuery:String?):Flow<List<School>>
+    @Query("SELECT * FROM sat_table WHERE school_name LIKE '%' ||:searchQuery||'%'")
+    fun searchSatTable(searchQuery:String?):Flow<List<School>>
 
 /*    @Transaction
     @Query("SELECT * FROM sat_table where dbn = :schoolDBN")

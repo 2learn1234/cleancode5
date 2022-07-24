@@ -18,6 +18,10 @@ abstract class SchoolRoomDatabase : RoomDatabase() {
     abstract val schoolDao: SchoolDao
     abstract val satScoresDao: SATScoresDao
 
+
+    //abstract fun schoolDao(): SchoolDao
+    //abstract fun satScoresDao(): SATScoresDao
+
     companion object {
         @Volatile
         private var INSTANCE: SchoolRoomDatabase? = null

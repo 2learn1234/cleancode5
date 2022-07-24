@@ -1,6 +1,8 @@
 package com.example.androidcleanarchitecture.ui
 
 import android.os.Bundle
+import android.os.Parcelable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +10,8 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.androidcleanarchitecture.R
 import com.example.androidcleanarchitecture.databinding.FragmentSchoolInfoBinding
 import com.example.androidcleanarchitecture.model.SATScores
@@ -38,6 +42,30 @@ class SchooInfoFragment : BaseFragment(R.layout.fragment_school_info) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+
+        val bundle=arguments
+
+        if(bundle !=null){
+            val uriString = arguments?.getString("dbn")
+
+            val dbn=arguments?.getString("dbn")
+            Log.e("FRAG DBN", "DBN as argis $dbn")
+
+            val description=arguments?.getString("description")
+            Log.e("FRAG description", "description as argis $description")
+
+        }
+/*
+       navArgs<String>.getValue()
+        if (bundle == null) {
+            Log.e("Confirmation", "ConfirmationFragment did not receive traveler information")
+            return
+        }        val args = navArgs().fromBundle(bundle)
+        showTravelerInformation(args.travelerInformation)
+        showTravelAddOns(args.travelAddOns)
+        showPromoCode(args.promoCode)
+*/
+
         viewLifecycleOwner.lifecycleScope.launch {
             // viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.schoolInfoData.collect { it ->
@@ -54,22 +82,13 @@ class SchooInfoFragment : BaseFragment(R.layout.fragment_school_info) {
                     }
                     is ResponseModel.Success -> {
                         dismissDialog()
-                        try {
-                            if (it.data?.body()?.get(0)?.dbn.isNullOrEmpty()) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "No data found.",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else {
-                                upDateWithSchoolInfor(it.data?.body()?.get(0))
+                        if (it.data?.body()?.size==0 || it.data?.body()?.get(0)?.dbn.isNullOrEmpty()) {
 
-                            }
-                        } catch (e: Exception) {
-                            val bottomNavigationView =
-                                activity?.findViewById(R.id.bottom_navigation) as BottomNavigationView
-                            bottomNavigationView.selectedItemId = R.id.newsFragment
+                        } else {
+                            upDateWithSchoolInfor(it.data?.body()?.get(0))
+
                         }
+
                     }
                 }
             }
