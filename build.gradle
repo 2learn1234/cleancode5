@@ -1,23 +1,28 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '1.6.21'
+    ext.ksp_version = '1.5.31-1.0.0'
     ext {
         koin_version = "3.1.5"
         glideVersion = '4.10.0'
-        gsonVersion = '2.8.2'
+        gsonVersion = '2.8.9'
         lifecycleVersion = '2.2.0'
         materialVersion = '1.2.0'
         retrofitVersion = '2.9.0'
         okhttpLoggingVersion = '4.7.2'
-        navigationVersion = '2.4.2'
+        navigationVersion = '2.5.0'
         truthVersion = '0.42'
-        coroutinesVersion = "1.4.2"
+        coroutinesVersion = "1.6.3"
     }
     repositories {
+       // maven{ url 'https://dl.bintray.com/kotlin/kotlin-eap'
+        // maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         mavenCentral()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+
     }
 }
 

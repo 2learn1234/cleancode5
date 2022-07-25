@@ -12,9 +12,8 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
 import okhttp3.*
-import java.io.IOException
 
-open class SchoolRepository(val context: Context?){//internal constructor(context) {
+open class SchoolRepository(val context: Context?) {//internal constructor(context) {
     //private val mSchoolDao: SchoolDao
     //private val mScoresDao: SATScoresDao
 
@@ -22,16 +21,16 @@ open class SchoolRepository(val context: Context?){//internal constructor(contex
      * Will fetch Schools list as LiveData so that it can be executed in the background
      * @return
      */
-   // public val allSchools: LiveData<List<School>>
+    // public val allSchools: LiveData<List<School>>
 
     /**
      * Search in DB
      * @param searchString
      * @return
      */
-  /*  public fun getFilteredSchools(searchString: String?): LiveData<List<School>> {
-        return mSchoolDao.getSchoolsFiltered(searchString)
-    }*/
+    /*  public fun getFilteredSchools(searchString: String?): LiveData<List<School>> {
+          return mSchoolDao.getSchoolsFiltered(searchString)
+      }*/
 
     /*
      * Get SATScores for School DBN
@@ -42,7 +41,8 @@ open class SchoolRepository(val context: Context?){//internal constructor(contex
         return mScoresDao?.getScore(schoolDBN)
     }*/
 
-  /*  *//**
+    /*  */
+    /**
      * Insert Schools into DB in background
      * @param schools
      *//*
@@ -54,7 +54,8 @@ open class SchoolRepository(val context: Context?){//internal constructor(contex
         }
     }
 
-    *//**
+    */
+    /**
      * Insert Scores into DB in background
      * @param scores
      *//*
@@ -66,7 +67,8 @@ open class SchoolRepository(val context: Context?){//internal constructor(contex
         }
     }
 
-    *//**
+    */
+    /**
      * From here lies all code related to REST API calls using OKHTTP.
      * We can put them in another class to handle them.
      *//*
@@ -75,7 +77,8 @@ open class SchoolRepository(val context: Context?){//internal constructor(contex
         fetchSATScores()
     }
 
-    *//**
+    */
+    /**
      * Fetches School Data from NYC Schools API
      *//*
     public  fun fetchSchoolsData() {
@@ -103,7 +106,8 @@ open class SchoolRepository(val context: Context?){//internal constructor(contex
         }
     }
 
-    *//**
+    */
+    /**
      * Fetches SATScores Data from NYC Schools API
      *//*
     public fun fetchSATScores() {
@@ -136,11 +140,12 @@ open class SchoolRepository(val context: Context?){//internal constructor(contex
         @Volatile
         private var INSTANCE: SchoolRepository? = null
 
-        *//**
-         * Singleton Instance
-         * @param context
-         * @return
-         *//*
+        */
+    /**
+     * Singleton Instance
+     * @param context
+     * @return
+     *//*
         *//*public fun getRepository(context: Context?): SchoolRepository? {
             if (INSTANCE == null) {
                 synchronized(SchoolRepository::class.java) {
@@ -153,10 +158,10 @@ open class SchoolRepository(val context: Context?){//internal constructor(contex
         }*//*
     }*/
 
- /*   init {
-        val db = SchoolRoomDatabase.getDatabase(context = context)
-        mSchoolDao = db.schoolDao()
-        mScoresDao = db.satScoresDao()
-       allSchools = mSchoolDao.schools
-    }*/
+    /*   init {
+           val db = SchoolRoomDatabase.getDatabase(context = context)
+           mSchoolDao = db.schoolDao()
+           mScoresDao = db.satScoresDao()
+          allSchools = mSchoolDao.schools
+       }*/
 }

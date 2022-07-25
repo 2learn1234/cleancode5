@@ -1,7 +1,6 @@
 package com.example.androidcleanarchitecture.repository
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import com.example.androidcleanarchitecture.database.SchoolRoomDatabase
 import com.example.androidcleanarchitecture.di.NetworkModule
 import com.example.androidcleanarchitecture.model.SATScores
@@ -57,9 +56,12 @@ class DataRepository(var networkModule: NetworkModule, context: Context) {
      */
     fun insertAll(schools: List<School>?) {
         SchoolRoomDatabase.databaseWriteExecutor.execute {
-            mSchoolDao.insertAll(
-                schools
-            )
+            try {
+                mSchoolDao.insertAll(
+                    schools
+                )
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -69,9 +71,12 @@ class DataRepository(var networkModule: NetworkModule, context: Context) {
      */
     public fun insertAllScores(scores: List<SATScores>?) {
         SchoolRoomDatabase.databaseWriteExecutor.execute {
-            mScoresDao.insertAll(
-                scores
-            )
+            try {
+                mScoresDao.insertAll(
+                    scores
+                )
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -167,14 +172,14 @@ class DataRepository(var networkModule: NetworkModule, context: Context) {
 
     suspend fun getNewsFromNetwork(category: String): Flow<Response<List<School>>> {
         return flow<Response<List<School>>> {
-            val response = networkModule.sourceOfNetwork().getNews()
+            val response = networkModule.sourceOfNetwork().getSchools()
             emit(response)
         }
     }
 
     suspend fun getNewsFromNetwork2(dbn: String): Flow<Response<List<SATScores>>> {
         return flow<Response<List<SATScores>>> {
-            val response = networkModule.sourceOfNetwork().getNews2(dbn)
+            val response = networkModule.sourceOfNetwork().getScores(dbn)
             emit(response)
         }
     }

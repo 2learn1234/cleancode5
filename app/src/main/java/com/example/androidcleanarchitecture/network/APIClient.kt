@@ -1,6 +1,7 @@
 package com.example.androidcleanarchitecture.network
 
 import com.example.androidcleanarchitecture.network.URL.baseURL
+import com.hadiyarajesh.flower.calladpater.FlowCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -21,6 +22,7 @@ class APIClient {
             return Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
+                .addCallAdapterFactory(FlowCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(APIService::class.java)
