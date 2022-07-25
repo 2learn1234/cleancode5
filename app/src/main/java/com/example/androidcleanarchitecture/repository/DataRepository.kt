@@ -175,6 +175,7 @@ class DataRepository(var networkModule: NetworkModule, context: Context) {
 
 
     suspend fun getNewsFromNetwork(category: String): Flow<Response<List<School>>> {
+
         return flow<Response<List<School>>> {
             val response = networkModule.sourceOfNetwork().getSchools()
             emit(response)

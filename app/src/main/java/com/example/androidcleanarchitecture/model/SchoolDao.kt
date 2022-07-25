@@ -22,9 +22,6 @@ interface SchoolDao {
     @Query("SELECT * FROM school_table ORDER BY dbn DESC")
     fun selectSchools():Flow<List<School>>
 
-    @Query("SELECT * FROM school_table ORDER BY dbn DESC")
-    fun selectSchools2():Flow<List<School>>
-
     @Query("SELECT * FROM school_table WHERE school_name LIKE '%' ||:searchQuery||'%'")
     fun searchInSchoolTable(searchQuery:String?):Flow<List<School>>
 

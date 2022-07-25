@@ -22,11 +22,15 @@ import kotlinx.coroutines.flow.flowOn
 
 class SchoolsViewModel(public var dataRepo: DataRepository) : ViewModel() {
 
+    companion object {
+        const val TAG = "SchoolsViewModel"
+    }
+
     val schoolData =
         MutableStateFlow<ResponseModel<Response<List<School>>>>(ResponseModel.Idle("Idle State"))
 
-    private  val _searchSchools_ = MutableStateFlow<List<School>>(emptyList())
-    val searchSchools:StateFlow<List<School>> = _searchSchools_
+    private val _searchSchools_ = MutableStateFlow<List<School>>(emptyList())
+    val searchSchools: StateFlow<List<School>> = _searchSchools_
 
     //val schoolData:Immu
     val category = MutableStateFlow<String>("")
@@ -36,22 +40,22 @@ class SchoolsViewModel(public var dataRepo: DataRepository) : ViewModel() {
         MutableStateFlow<ResponseModel<Response<List<SATScores>>>>(ResponseModel.Idle("Idle State"))
     val newsURL2 = MutableStateFlow<String>("")
 
-   // val allSchools=dataRepo.schools
+    // val allSchools=dataRepo.schools
 
-    fun insertSchools(schools:List<School>)=viewModelScope.launch {
+    fun insertSchools(schools: List<School>) = viewModelScope.launch {
         dataRepo.insertAll(schools)
     }
 
-   fun deleteSchools()=viewModelScope.launch {
-       dataRepo.deleteShools()
-   }
+    fun deleteSchools() = viewModelScope.launch {
+        dataRepo.deleteShools()
+    }
 
-    fun deleteScores()=viewModelScope.launch {
+    fun deleteScores() = viewModelScope.launch {
         dataRepo.deleteScores()
     }
 
-    fun searchSchools(searchQuery: String)=viewModelScope.launch {
-        dataRepo.getSearchSchools(searchQuery).collect{  schoolList ->
+    fun searchSchools(searchQuery: String) = viewModelScope.launch {
+        dataRepo.getSearchSchools(searchQuery).collect { schoolList ->
             _searchSchools_.emit(schoolList)
         }
     }
@@ -69,12 +73,13 @@ class SchoolsViewModel(public var dataRepo: DataRepository) : ViewModel() {
 
 
     suspend fun getNews(value: String) {
-       // schoolData.emit(ResponseModel.Loading())
+        // schoolData.emit(ResponseModel.Loading())
+
         dataRepo.getNewsFromNetwork(value).collect {
             viewModelScope.launch {
                 if (it.isSuccessful) {
                     schoolData.emit(ResponseModel.Success(it))
-                  //  dataRepo.insertAll(it.body())
+                    //  dataRepo.insertAll(it.body())
                 } else
                     schoolData.emit(ResponseModel.Error(it.message()))
             }
@@ -102,20 +107,31 @@ class SchoolsViewModel(public var dataRepo: DataRepository) : ViewModel() {
     suspend fun transmitNewsURL(value: String) {
         newsURL.emit(value)
     }
+
     fun getMyData(): Flow<Resource<List<School>>> {
         return com.hadiyarajesh.flower.networkBoundResource(
-            fetchFromLocal = { dataRepo.getSchools() },
-            shouldFetchFromRemote = { Log.i("TAG", "Fetching from local cache")
-              it==null },
+
+            fetchFromLocal = {
+                Log.i(TAG, "Fetching from local cache")
+                val localResult = dataRepo.getSchools()
+                localResult
+            },
+            shouldFetchFromRemote = {
+                Log.i(TAG, "Checking if remote fetch is needed")
+                it == null
+            },
             fetchFromRemote = {
+                Log.i(TAG, "Fetching from remote server")
                 dataRepo.networkModule.sourceOfNetwork().getSchools3()
 
             },
             processRemoteResponse = { },
-            saveRemoteData = { schools:List<School> ->
-                dataRepo.insertAll2(schools) },
-            onFetchFailed = {_,_ ->}
-          //  onFetchFailed { _: String?, _: Int ->}
+            saveRemoteData = { schools: List<School> ->
+                Log.i(TAG, "Saving from remote data to local cache")
+                dataRepo.insertAll2(schools)
+            },
+            onFetchFailed = { _, _ -> }
+            //  onFetchFailed { _: String?, _: Int ->}
         ).flowOn(Dispatchers.IO)
     }
 

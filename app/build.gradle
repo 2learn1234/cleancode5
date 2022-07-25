@@ -122,6 +122,8 @@ dependencies {
     //implementation "com.github.skydoves:sandwich:1.2.6"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
     implementation("io.github.hadiyarajesh:flower:2.0.3")
+    implementation project(path: ':check_internet')
+  //  implementation 'com.github.raheemadamboev:check-internet-android:1.0.1'
 
 
 }
