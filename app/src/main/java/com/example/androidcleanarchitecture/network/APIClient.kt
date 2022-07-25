@@ -1,5 +1,6 @@
 package com.example.androidcleanarchitecture.network
 
+
 import com.example.androidcleanarchitecture.network.URL.baseURL
 import com.hadiyarajesh.flower.calladpater.FlowCallAdapterFactory
 import okhttp3.OkHttpClient
@@ -9,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class APIClient {
     companion object {
-        private const val BASE_URL = baseURL
+        private  val BASE_URL = baseURL
 
         fun create(): APIService {
             val logger =
@@ -22,7 +23,7 @@ class APIClient {
             return Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
-                .addCallAdapterFactory(FlowCallAdapterFactory.create())
+               .addCallAdapterFactory(FlowCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(APIService::class.java)

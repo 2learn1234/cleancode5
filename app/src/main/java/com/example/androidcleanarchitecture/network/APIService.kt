@@ -2,6 +2,7 @@ package com.example.androidcleanarchitecture.network
 
 import com.example.androidcleanarchitecture.model.SATScores
 import com.example.androidcleanarchitecture.model.School
+import com.hadiyarajesh.flower.ApiResponse
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import retrofit2.http.GET
@@ -18,6 +19,9 @@ interface APIService {
     @GET(URL.GET_SCHOOLS)
     public suspend fun getSchools2(
     ) : Flow<ApiResponse<List<School>>>
+
+    @GET(URL.GET_SCHOOLS)
+    public fun getSchools3() : Flow<ApiResponse<List<School>>>
 
 
 }

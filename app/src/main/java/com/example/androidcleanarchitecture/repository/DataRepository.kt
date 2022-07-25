@@ -1,6 +1,7 @@
 package com.example.androidcleanarchitecture.repository
 
 import android.content.Context
+import android.util.Log
 import com.example.androidcleanarchitecture.database.SchoolRoomDatabase
 import com.example.androidcleanarchitecture.di.NetworkModule
 import com.example.androidcleanarchitecture.model.SATScores
@@ -10,6 +11,8 @@ import com.example.androidcleanarchitecture.model.SchoolDao
 import com.example.androidcleanarchitecture.network.URL
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.hadiyarajesh.flower.Resource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.Call
@@ -31,9 +34,10 @@ class DataRepository(var networkModule: NetworkModule, context: Context) {
     }
 
 
-    suspend fun insertAll(schools:List<School>)=mSchoolDao.insertAll(schools)
+    suspend fun insertAll(schools:List<School>?)=mSchoolDao.insertAll(schools)
 
     fun getSchools()=mSchoolDao.selectSchools()
+
 
     fun seachSchools(searchQuery: String?)=mSchoolDao.searchInSchoolTable(searchQuery)
     suspend fun deleteAllSchools()=mSchoolDao.deleteAll()
@@ -44,7 +48,7 @@ class DataRepository(var networkModule: NetworkModule, context: Context) {
      * @param searchString
      * @return
      */
-    public fun getSearchSchools(searchString: String?): Flow<List<School>> {
+    fun getSearchSchools(searchString: String): Flow<List<School>> {
         return mSchoolDao.searchInSchoolTable(searchString)
     }
 
@@ -54,7 +58,7 @@ class DataRepository(var networkModule: NetworkModule, context: Context) {
      * Insert Schools into DB in background
      * @param schools
      */
-    fun insertAll(schools: List<School>?) {
+    suspend fun insertAll2(schools: List<School>?) {
         SchoolRoomDatabase.databaseWriteExecutor.execute {
             try {
                 mSchoolDao.insertAll(
@@ -191,6 +195,7 @@ class DataRepository(var networkModule: NetworkModule, context: Context) {
     suspend fun deleteScores() {
         mScoresDao.deleteAll()
     }
+
 
 
 }

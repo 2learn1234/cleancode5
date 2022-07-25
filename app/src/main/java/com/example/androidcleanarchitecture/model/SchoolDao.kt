@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SchoolDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(school: List<School?>?)
+     fun insertAll(school: List<School?>?)
 
     @Insert
     suspend fun insertSchool(school: School)=null
@@ -22,12 +22,15 @@ interface SchoolDao {
     @Query("SELECT * FROM school_table ORDER BY dbn DESC")
     fun selectSchools():Flow<List<School>>
 
+    @Query("SELECT * FROM school_table ORDER BY dbn DESC")
+    fun selectSchools2():Flow<List<School>>
+
     @Query("SELECT * FROM school_table WHERE school_name LIKE '%' ||:searchQuery||'%'")
     fun searchInSchoolTable(searchQuery:String?):Flow<List<School>>
 
 
     @get:Query("SELECT * FROM school_table ORDER BY school_name DESC")
-   // @get:Transaction
+    @get:Transaction
     val schools: Flow<List<School>>
 
   /*  @Transaction

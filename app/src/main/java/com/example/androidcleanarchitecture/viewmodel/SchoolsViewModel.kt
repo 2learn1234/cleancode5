@@ -9,14 +9,14 @@ import com.example.androidcleanarchitecture.network.APIService
 import com.example.androidcleanarchitecture.network.ResponseModel
 import com.example.androidcleanarchitecture.repository.DataRepository
 import com.hadiyarajesh.flower.Resource
+import com.hadiyarajesh.flower.networkBoundResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Response
-import com.hadiyarajesh.flower.*
-import com.hadiyarajesh.flower.networkBoundResource
+
 import kotlinx.coroutines.flow.flowOn
 
 
@@ -36,7 +36,7 @@ class SchoolsViewModel(public var dataRepo: DataRepository) : ViewModel() {
         MutableStateFlow<ResponseModel<Response<List<SATScores>>>>(ResponseModel.Idle("Idle State"))
     val newsURL2 = MutableStateFlow<String>("")
 
-//    val allSchools=dataRepo.getAllSchools()
+   // val allSchools=dataRepo.schools
 
     fun insertSchools(schools:List<School>)=viewModelScope.launch {
         dataRepo.insertAll(schools)
@@ -67,20 +67,6 @@ class SchoolsViewModel(public var dataRepo: DataRepository) : ViewModel() {
         data class Error(val message: String) : Event()
     }
 
-    fun getMyData(): Flow<Resource<List<School>>> {
-        return networkBoundResource(
-            fetchFromLocal = { Log.i("TAG", "Fetching from local cache")
-                val localResult = dataRepo.getSchools()
-                localResult },
-            shouldFetchFromRemote = {  Log.i("TAG", "Checking if remote fetch is needed")
-                it == null
-                },
-            fetchFromRemote = {},
-            processRemoteResponse = { },
-            saveRemoteData = { dataRepo.insertAll(it) },
-            onFetchFailed = {""; 5 }
-        ).flowOn(Dispatchers.IO)
-    }
 
     suspend fun getNews(value: String) {
        // schoolData.emit(ResponseModel.Loading())
@@ -88,7 +74,7 @@ class SchoolsViewModel(public var dataRepo: DataRepository) : ViewModel() {
             viewModelScope.launch {
                 if (it.isSuccessful) {
                     schoolData.emit(ResponseModel.Success(it))
-                    dataRepo.insertAll(it.body())
+                  //  dataRepo.insertAll(it.body())
                 } else
                     schoolData.emit(ResponseModel.Error(it.message()))
             }
@@ -115,6 +101,22 @@ class SchoolsViewModel(public var dataRepo: DataRepository) : ViewModel() {
 
     suspend fun transmitNewsURL(value: String) {
         newsURL.emit(value)
+    }
+    fun getMyData(): Flow<Resource<List<School>>> {
+        return com.hadiyarajesh.flower.networkBoundResource(
+            fetchFromLocal = { dataRepo.getSchools() },
+            shouldFetchFromRemote = { Log.i("TAG", "Fetching from local cache")
+              it==null },
+            fetchFromRemote = {
+                dataRepo.networkModule.sourceOfNetwork().getSchools3()
+
+            },
+            processRemoteResponse = { },
+            saveRemoteData = { schools:List<School> ->
+                dataRepo.insertAll2(schools) },
+            onFetchFailed = {_,_ ->}
+          //  onFetchFailed { _: String?, _: Int ->}
+        ).flowOn(Dispatchers.IO)
     }
 
 }
