@@ -1,6 +1,7 @@
 package com.example.androidcleanarchitecture.ui
 
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,8 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
@@ -56,6 +59,46 @@ class SchoolsFragment : Fragment() {
         binding.rvSchools.adapter = newsListAdapter
 
         binding.rvSchools.layoutManager = LinearLayoutManager(requireContext())
+
+
+       /* viewModel.currentPageNo.observe(activity as MainActivity, Observer {
+            binding.rvSchools;//.text = it.toString()
+        })*/
+
+        viewModel.quotes.observe(activity as MainActivity, Observer {
+            when (it) {
+                is SchoolsViewModel.State.LoadingState -> {
+                 /*   binding.quoteCard.hide { animator -> updateQuoteCardAnimator(animator) }
+                    binding.progressBar.show()
+                    binding.nextBtn.isEnabled = false
+                    binding.prevBtn.isEnabled = false*/
+                }
+                is SchoolsViewModel.State.UIState -> {
+                    val list = it.quote
+                    /* binding.progressBar.hide()
+                     showError("")
+                     binding.quoteCard.show { animator -> updateQuoteCardAnimator(animator) }
+                     binding.nextBtn.isEnabled = true
+                     binding.prevBtn.isEnabled = it.currentPage > 1
+
+                     @Suppress("DEPRECATION")
+                     binding.quoteTv.text = Html.fromHtml(it.quote.quote)
+                     binding.quoteAuthorTv.text = it.quote.title*/
+                }
+                is SchoolsViewModel.State.ErrorState -> {
+                   /* binding.progressBar.hide()
+                    binding.quoteCard.hide { animator -> updateQuoteCardAnimator(animator) }
+                    binding.nextBtn.isEnabled = true
+                    binding.prevBtn.isEnabled = true
+                    showError("StatusCode ${it.statusCode}: ${it.errorMessage}")*/
+                }
+                else -> {
+                }
+            }
+        })
+
+
+if(false)
         launch = viewLifecycleOwner.lifecycleScope.launch {
             //  viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.schoolData.collect { it ->
@@ -91,11 +134,15 @@ class SchoolsFragment : Fragment() {
                 }
                 //   }
             }
+
+
+
         }
 
         viewModel.viewModelScope.launch {
             viewModel.category.collect {
-                viewModel.getNews(it)
+              //  viewModel.getNews(it)
+              //  viewModel.changePage(1)
             }
         }
 
@@ -104,6 +151,8 @@ class SchoolsFragment : Fragment() {
 
             viewModel.searchSchools(it.toString().trim())
         }
+
+
 
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -141,7 +190,7 @@ class SchoolsFragment : Fragment() {
             } catch (e: Exception) {
                 val bottomNavigationView =
                     activity?.findViewById(R.id.bottom_navigation) as BottomNavigationView
-                bottomNavigationView.selectedItemId = R.id.detailNewsFragment
+                bottomNavigationView.selectedItemId = R.id.detailsSchoolsFragment
             }
         }
     }

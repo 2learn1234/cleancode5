@@ -8,7 +8,7 @@
         android:title="@string/news" />
 
     <item
-        android:id="@+id/detailNewsFragment"
+        android:id="@+id/detailsSchoolsFragment"
         android:enabled="true"
         android:icon="@drawable/filter"
         android:title="@string/details" />

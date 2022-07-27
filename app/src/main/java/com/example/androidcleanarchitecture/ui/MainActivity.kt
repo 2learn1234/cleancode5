@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var navController: NavController
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private val newsViewModel : SchoolsViewModel by viewModel()
+    private val schoolsViewModel : SchoolsViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun transmitCategory(value: String) {
         lifecycleScope.launch {
-            newsViewModel.transmitCategory(value)
+            schoolsViewModel.transmitCategory(value)
         }
     }
     fun hideProgress() {

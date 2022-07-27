@@ -12,13 +12,9 @@ interface APIService {
     @GET(URL.GET_SCHOOLS)
     public suspend fun getSchools(
     ) : Response<List<School>>
-
     @GET(URL.GET_SCORES)
     public suspend fun getScores(@Query("dbn") dbn: String): Response<List<SATScores>>
 
-    @GET(URL.GET_SCHOOLS)
-    public suspend fun getSchools2(
-    ) : Flow<ApiResponse<List<School>>>
 
     @GET(URL.GET_SCHOOLS)
     public fun getSchools3() : Flow<ApiResponse<List<School>>>

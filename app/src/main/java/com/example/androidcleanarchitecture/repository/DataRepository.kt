@@ -9,12 +9,16 @@ import com.example.androidcleanarchitecture.model.SATScoresDao
 import com.example.androidcleanarchitecture.model.School
 import com.example.androidcleanarchitecture.model.SchoolDao
 import com.example.androidcleanarchitecture.network.URL
+import com.example.androidcleanarchitecture.viewmodel.SchoolsViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.hadiyarajesh.flower.ApiResponse
 import com.hadiyarajesh.flower.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -58,7 +62,7 @@ class DataRepository(var networkModule: NetworkModule, context: Context) {
      * Insert Schools into DB in background
      * @param schools
      */
-    suspend fun insertAll2(schools: List<School>?) {
+  /*  suspend fun insertAll2(schools: List<School>?) {
         SchoolRoomDatabase.databaseWriteExecutor.execute {
             try {
                 mSchoolDao.insertAll(
@@ -67,7 +71,7 @@ class DataRepository(var networkModule: NetworkModule, context: Context) {
             } catch (e: Exception) {
             }
         }
-    }
+    }*/
 
     /**
      * Insert Scores into DB in background
@@ -177,8 +181,9 @@ class DataRepository(var networkModule: NetworkModule, context: Context) {
     suspend fun getNewsFromNetwork(category: String): Flow<Response<List<School>>> {
 
         return flow<Response<List<School>>> {
-            val response = networkModule.sourceOfNetwork().getSchools()
-            emit(response)
+          //  val response = networkModule.sourceOfNetwork().getSchools3()
+            val response2 = networkModule.sourceOfNetwork().getSchools()
+            emit(response2)
         }
     }
 
@@ -197,6 +202,46 @@ class DataRepository(var networkModule: NetworkModule, context: Context) {
         mScoresDao.deleteAll()
     }
 
+    fun getRandomQuote(schools: Int, onFailed: (String?, Int) -> Unit = { _: String?, _: Int -> }): Flow<Resource<List<School>>> {
+        return com.hadiyarajesh.flower.networkBoundResource(
 
+            fetchFromLocal = {
+                Log.e(SchoolsViewModel.TAG, "Fetching from local cache")
+                val localResult = getSchools()
+                localResult
+
+
+            },
+            shouldFetchFromRemote = {
+                Log.i(SchoolsViewModel.TAG, "Checking if remote fetch is needed")
+                it == null || it.size==0
+            },
+            fetchFromRemote = {
+                Log.i(SchoolsViewModel.TAG, "Fetching from remote server")
+                networkModule.sourceOfNetwork().getSchools3()
+
+            },
+            processRemoteResponse = { },
+            saveRemoteData = { schools: List<School> ->
+                Log.i(SchoolsViewModel.TAG, "Saving from remote data to local cache")
+                mSchoolDao.insertAll(schools)
+            },
+            onFetchFailed = { errorBody, statusCode -> onFailed(errorBody, statusCode) },            //  onFetchFailed { _: String?, _: Int ->}
+        ).map {
+            when (it.status) {
+                Resource.Status.LOADING -> {
+                    Resource.loading(null)
+                }
+                Resource.Status.SUCCESS -> {
+                    val quote = it.data
+                    Resource.success(quote)
+                }
+                is Resource.Status.ERROR -> {
+                    val error = it.status as Resource.Status.ERROR
+                    Resource.error(error.message, error.statusCode, it.data)
+                }
+            }
+        }.flowOn(Dispatchers.IO)
+    }
 
 }

@@ -15,8 +15,8 @@ interface SATScoresDao {
     @Query("DELETE FROM sat_table")
     suspend fun deleteAll()=null
 
-    @Query("SELECT * FROM sat_table WHERE school_name LIKE '%' ||:searchQuery||'%'")
-    fun searchSatTable(searchQuery:String?):Flow<List<School>>
+   // @Query("SELECT * FROM sat_table WHERE school_name LIKE '%' ||:searchQuery||'%'")
+    //fun searchSatTable(searchQuery:String?):Flow<List<School>>
 
 /*    @Transaction
     @Query("SELECT * FROM sat_table where dbn = :schoolDBN")

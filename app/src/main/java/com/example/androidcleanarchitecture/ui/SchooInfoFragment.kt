@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
@@ -40,6 +41,10 @@ class SchooInfoFragment : BaseFragment(R.layout.fragment_school_info) {
         return binding.root
     }
 
+    companion object {
+        const val TAG = "SchooInfoFragment"
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 
@@ -49,12 +54,14 @@ class SchooInfoFragment : BaseFragment(R.layout.fragment_school_info) {
             val uriString = arguments?.getString("dbn")
 
             val dbn=arguments?.getString("dbn")
-            Log.e("FRAG DBN", "DBN as argis $dbn")
+            Log.e(TAG, "DBN as argis $dbn")
 
             val description=arguments?.getString("description")
-            Log.e("FRAG description", "description as argis $description")
+            Log.e(TAG, "description as argis $description")
 
         }
+
+
 /*
        navArgs<String>.getValue()
         if (bundle == null) {
@@ -65,6 +72,17 @@ class SchooInfoFragment : BaseFragment(R.layout.fragment_school_info) {
         showTravelAddOns(args.travelAddOns)
         showPromoCode(args.promoCode)
 */
+
+        viewModel.quotes.observe(activity as MainActivity, Observer {
+            when (it) {
+                is SchoolsViewModel.State.LoadingState -> {
+                }
+                is SchoolsViewModel.State.UIState -> {
+
+                }
+                else -> {}
+            }
+            })
 
         viewLifecycleOwner.lifecycleScope.launch {
             // viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

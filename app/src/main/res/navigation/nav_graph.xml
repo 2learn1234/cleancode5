@@ -12,11 +12,11 @@
         tools:layout="@layout/fragment_schools" >
         <action
             android:id="@+id/action_newsFragment_to_detailNewsFragment"
-            app:destination="@id/detailNewsFragment" />
+            app:destination="@id/detailsSchoolsFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/detailNewsFragment"
+        android:id="@+id/detailsSchoolsFragment"
         android:name="com.example.androidcleanarchitecture.ui.SchooInfoFragment"
         android:label="Details"
         tools:layout="@layout/fragment_school_info" >

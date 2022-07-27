@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SchoolDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-     fun insertAll(school: List<School?>?)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+     suspend fun insertAll(school: List<School>?)=null
 
     @Insert
     suspend fun insertSchool(school: School)=null
